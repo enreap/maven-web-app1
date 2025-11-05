@@ -25,7 +25,44 @@ pipeline {
                 }
             }
         }
-
+        stage('SonarQube Scan') {
+            steps {
+                echo "🔍 Running SonarQube Analysis..."
+                withSonarQubeEnv('SonarQubeServer') {
+                    withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                        sh """
+                            mvn sonar:sonar \
+                              -Dsonar.projectKey=${APP_NAME} \
+                              -Dsonar.host.url=${SONAR_HOST_URL} \
+                              -Dsonar.login=$SONAR_TOKEN
+                        """
+                    }
+                }
+            }
+        }
+        stage('Push Artifact to Nexus') {
+            steps {
+                echo "📦 Deploying artifact to Nexus..."
+                withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh """
+                        mkdir -p ~/.m2
+                        cat > ~/.m2/settings.xml <<EOF
+<settings>
+  <servers>
+    <server>
+      <id>nexus</id>
+      <username>$NEXUS_USER</username>
+      <password>$NEXUS_PASS</password>
+    </server>
+  </servers>
+</settings>
+EOF
+                        mvn clean deploy -DskipTests
+                    """
+                }
+            }
+        }
+            
         stage('Docker Build') {
             steps {
                 script {
