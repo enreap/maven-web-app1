@@ -2,7 +2,7 @@
 FROM tomcat:10.1-jdk17
 
 # Set environment variables
-ENV APP_NAME=company-webapp
+ENV APP_NAME=maven-web-app
 ENV DEPLOY_DIR=/usr/local/tomcat/webapps
 
 # Remove default ROOT app
