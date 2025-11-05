@@ -9,8 +9,8 @@ public class CompanyServlet extends HttpServlet {
             throws ServletException, IOException {
 
         // Set company info
-        request.setAttribute("companyName", "Acme Corporation");
-        request.setAttribute("companyAddress", "123 Main Street, Springfield, USA");
+        request.setAttribute("companyName", "Enreap");
+        request.setAttribute("companyAddress", "7th Floor, Marisoft Phase 3, Kalyani Nagar, Pune, India 411014");
         request.setAttribute("logoPath", "images/logo.png");
 
         // Forward to JSP
