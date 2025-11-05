@@ -1,56 +1,74 @@
-pipeline
-{
-  agent any
-  
-  tools
-  {
-    maven 'Maven_3.8.2'
-  }
-  
-  triggers
-  {
-    pollSCM('* * * * *')
-  }
-  
-  options
-  {
-    timestamps()
-    buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5'))
-  }
-  
-  stages
-  {
-    stage('Checkout Code from GitHub')
-    {
-      steps()
-      {
-        git branch: 'development', credentialsId: '957b543e-6f77-4cef-9aec-82e9b0230975', url: 'https://github.com/xxxxxxxx/maven-web-application-1.git'
-      }
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = "company-webapp"
+        DOCKERHUB_USER = "your-dockerhub-username"
+        DOCKERHUB_CREDENTIALS = "dockerhub-creds"  // Jenkins credential ID
+        KUBECONFIG_CREDENTIALS = "kubeconfig"     // Jenkins credential ID for kubeconfig
     }
-    
-    stage('Build Project')
-    {
-      steps()
-      {
-        sh "mvn clean package"
-      }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/yourusername/company-webapp.git'
+            }
+        }
+
+        stage('Maven Build') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'target/*.war', fingerprint: true
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                script {
+                    sh """
+                        docker build -t ${DOCKERHUB_USER}/${APP_NAME}:latest .
+                    """
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                        sh """
+                            echo "$PASS" | docker login -u "$USER" --password-stdin
+                            docker push ${DOCKERHUB_USER}/${APP_NAME}:latest
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIALS}", variable: 'KUBECONFIG')]) {
+                        sh """
+                            kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yaml
+                            kubectl --kubeconfig=$KUBECONFIG rollout status deployment/${APP_NAME}-deployment
+                        """
+                    }
+                }
+            }
+        }
     }
-    
-    stage('Execute SonarQube Report')
-    {
-      steps()
-      {
-        sh "mvn clean sonar:sonar"
-      }
+
+    post {
+        success {
+            echo "✅ Deployment Successful!"
+        }
+        failure {
+            echo "❌ Build or Deployment Failed!"
+        }
     }
-    
-    stage('Upload Artifacts to Sonatype Nexus')
-    {
-      steps()
-      {
-        sh "mvn clean deploy"
-      }
-    }
-        
-  }
 }
