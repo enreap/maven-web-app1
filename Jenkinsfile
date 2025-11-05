@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME = "company-webapp"
+        APP_NAME = "maven-web-app"
         DOCKERHUB_USER = "your-dockerhub-username"
         DOCKERHUB_CREDENTIALS = "dockerhub-creds"  // Jenkins credential ID
         KUBECONFIG_CREDENTIALS = "kubeconfig"     // Jenkins credential ID for kubeconfig
