@@ -1,33 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: company-webapp-deployment
+  name: maven-web-app
   labels:
-    app: company-webapp
+    app: maven-web-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: company-webapp
+      app: maven-web-app
   template:
     metadata:
       labels:
-        app: company-webapp
+        app: maven-web-app
     spec:
       containers:
-      - name: company-webapp
-        image: your-dockerhub-username/company-webapp:latest
+      - name: maven-web-app
+        image: dockerhub-username/company-webapp:latest
         ports:
         - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: company-webapp-service
+  name: maven-web-app-service
 spec:
   type: LoadBalancer
   selector:
-    app: company-webapp
+    app: maven-web-app
   ports:
   - port: 80
     targetPort: 8080
