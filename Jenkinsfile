@@ -27,7 +27,7 @@ pipeline {
         }
         stage('SonarQube Scan') {
             steps {
-                echo "🔍 Running SonarQube Analysis..."
+                echo " Running SonarQube Analysis..."
                 withSonarQubeEnv('SonarQubeServer') {
                     withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                         sh """
@@ -42,7 +42,7 @@ pipeline {
         }
         stage('Push Artifact to Nexus') {
             steps {
-                echo "📦 Deploying artifact to Nexus..."
+                echo " Deploying artifact to Nexus..."
                 withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh """
                         mkdir -p ~/.m2
@@ -102,10 +102,10 @@ EOF
 
     post {
         success {
-            echo "✅ Deployment Successful!"
+            echo "Deployment Successful!"
         }
         failure {
-            echo "❌ Build or Deployment Failed!"
+            echo "Build or Deployment Failed!"
         }
     }
 }
