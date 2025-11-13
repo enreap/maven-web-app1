@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Repository & Branch
-        GIT_REPO_URL = 'https://github.com/enreap/maven-web-app'
+        GIT_REPO_URL = 'https://github.com/enreap/maven-web-app1'
         BRANCH_NAME  = 'main'
 
         // Tool names as configured in Jenkins
