@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/enreapdevops/maven-web-app.git'
+                git branch: 'main', url: 'git@github.com:enreapdevops/maven-web-app.git'
             }
         }
 
