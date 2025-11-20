@@ -65,7 +65,7 @@ pipeline {
             cleanWs()
         }
         success {
-            echo '✅ SonarQube analysis completed successfully!'
+            echo 'SonarQube analysis completed successfully!'
         }
         failure {
             echo 'Build or analysis failed — check Jenkins and SonarQube logs.'
