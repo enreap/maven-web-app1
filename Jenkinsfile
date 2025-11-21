@@ -28,24 +28,34 @@ pipeline {
                 sh "${MAVEN_HOME}/bin/mvn clean install -DskipTests"
             }
         }
-
-        stage('SonarQube Analysis') {
-            steps {
-                echo "Running SonarQube static code analysis..."
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    withCredentials([string(credentialsId: 'sonartoken1', variable: 'SONAR_TOKEN')]) {
-                        sh """
-                            ${MAVEN_HOME}/bin/mvn clean verify sonar:sonar \\
-								-Dsonar.projectKey=enreapdevops_sonar-java-demo_59ee0fd6-b269-4ef0-9631-04a882dbb2e4 \
-								-Dsonar.projectName='sonar-java-demo' \\
-								-Dsonar.host.url=http://sonarqube-alb-1691354020.us-east-1.elb.amazonaws.com \\
-								-Dsonar.token=sqp_aefb6fec5eb30179b0b435dcda997cebe66371e5\\
-								-Dsonar.qualitygate.wait=true
-                        """
-                    }
+        stage("Sonarqube Analysis "){
+            steps{
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=maven-web-app1 \
+                    -Dsonar.java.binaries=. \
+                    -Dsonar.projectKey=Petclinic '''
+    
                 }
             }
-        }
+        }		
+
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         echo "Running SonarQube static code analysis..."
+        //         withSonarQubeEnv("${SONARQUBE_ENV}") {
+        //             withCredentials([string(credentialsId: 'sonartoken1', variable: 'SONAR_TOKEN')]) {
+        //                 sh """
+        //                     ${MAVEN_HOME}/bin/mvn clean verify sonar:sonar \\
+								// -Dsonar.projectKey=enreapdevops_sonar-java-demo_59ee0fd6-b269-4ef0-9631-04a882dbb2e4 \
+								// -Dsonar.projectName='sonar-java-demo' \\
+								// -Dsonar.host.url=http://sonarqube-alb-1691354020.us-east-1.elb.amazonaws.com \\
+								// -Dsonar.token=sqp_aefb6fec5eb30179b0b435dcda997cebe66371e5\\
+								// -Dsonar.qualitygate.wait=true
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Quality Gate') {
             steps {
