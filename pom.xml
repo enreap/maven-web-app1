@@ -90,7 +90,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- SonarQube configuration -->
-        <sonar.host.url>http://sonarqube-server:9000</sonar.host.url>
+        <sonar.host.url>http://3.216.226.173:9000/</sonar.host.url>
         <sonar.login>${env.SONAR_TOKEN}</sonar.login> 
     </properties>
 
