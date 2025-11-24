@@ -91,7 +91,7 @@
 
         <!-- SonarQube configuration -->
         <sonar.host.url>http://3.216.226.173:9000/</sonar.host.url>
-        <sonar.login>${env.SONAR_TOKEN}</sonar.login> 
+        <sonar.login>${env.SONAR_TOKEN}</sonar.login>
         <sonar.projectKey>com.example:maven-web-app1</sonar.projectKey>     
     </properties>
 
