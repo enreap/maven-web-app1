@@ -10,7 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>maven-web-app</name>
+    <name>maven-web-app1</name>
 
     <dependencies>
         <!-- Servlet API -->
